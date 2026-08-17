@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.cache/
+*.duckdb
+*.duckdb.wal
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv/
+env/
+venv/
+*.egg-info/
+.pytest_cache/
