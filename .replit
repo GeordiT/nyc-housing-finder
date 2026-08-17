@@ -1,0 +1,37 @@
+modules = ["nodejs-24", "python-3.11"]
+
+[workflows]
+runButton = "Streamlit App"
+
+[[workflows.workflow]]
+name = "Streamlit App"
+mode = "sequential"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "fuser -k 5000/tcp 2>/dev/null || true; streamlit run app.py --server.port 5000 --server.address 0.0.0.0"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[[ports]]
+localPort = 8081
+externalPort = 80
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
