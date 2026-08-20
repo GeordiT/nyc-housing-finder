@@ -52,12 +52,28 @@ def _bootstrap_db():
     return "ready"
 
 
-bootstrap_state = _bootstrap_db()
+def ensure_database_loaded():
+    """Load the local database state without crashing Streamlit on cold start."""
+    return _bootstrap_db()
+
+
+try:
+    bootstrap_state = ensure_database_loaded()
+except Exception as e:
+    st.error(f"Database initialization error: {e}")
+    bootstrap_state = "error"
 
 # ─────────────────────────────────────────────────────────────────────────
 # STEP 2 — Empty-state detection: check live table counts
 # ─────────────────────────────────────────────────────────────────────────
-_counts_now = get_table_counts()
+try:
+    _counts_now = get_table_counts()
+except Exception as e:
+    st.error(f"Database status error: {e}")
+    _counts_now = {
+        "stabilized_buildings": 0,
+        "housing_connect_listings": 0,
+    }
 _db_is_empty = (
     _counts_now["stabilized_buildings"] == 0
     and _counts_now["housing_connect_listings"] == 0
